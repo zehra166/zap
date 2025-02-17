@@ -11,32 +11,20 @@ on:
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Run OWASP ZAP Baseline Scan
+      - name: Start ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
           target: 'https://your-app-url.com'
+          docker_name: 'owasp/zap2docker-stable'
           fail_action: false
-          docker_name: 'owasp/zap2docker-stable' 
-
+          rules_file_name: '.zap/rules.tsv' 
 
       - name: Upload ZAP Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: ZAP-Report
           path: report_html.html
-
-      - name: Authenticate with GitHub Container Registry
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u zehra166 --password-stdin
-
-      - name: Run OWASP ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.10.0
-        with:
-          target: 'https://your-app-url.com'
-          fail_action: false
-          docker_name: 'ghcr.io/zaproxy/zap2docker-stable'
-
