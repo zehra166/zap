@@ -24,7 +24,7 @@ jobs:
           rules_file_name: '.zap/rules.tsv'  # Optional: Custom rules file
 
       - name: Upload ZAP Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ZAP-Report
           path: report_html.html
