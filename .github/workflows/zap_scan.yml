@@ -15,14 +15,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u zehra166 --password-stdin
+
       - name: Start OWASP ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.7.0
-        with:
-          target: 'https://your-staging-app.com'
-          cmd_options: '-a'
+        run: |
+          docker pull ghcr.io/zaproxy/zap-stable:latest
+          docker run --rm -v $(pwd):/zap/wrk:rw ghcr.io/zaproxy/zap-stable:latest zap-baseline.py -t https://your-staging-app.com -J zap_report.json
 
       - name: Upload ZAP Scan Report
         uses: actions/upload-artifact@v4
         with:
           name: zap-report
-          path: report_html/
+          path: zap_report.json
