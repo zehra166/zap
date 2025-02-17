@@ -10,20 +10,31 @@ jobs:
   zap_scan:
     runs-on: ubuntu-latest
 
+    services:
+      web:
+        image: my-web-app:latest  # Replace with your actual image
+        ports:
+          - 8080:8080
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Start Web Application (if applicable)
-        run: |
-          docker-compose up -d  # Modify based on your setup
+      - name: Wait for Web Application to Start
+        run: sleep 30  # Adjust based on your app’s boot time
 
       - name: Run OWASP ZAP Baseline Scan
         run: |
-          docker run --rm -v $(pwd):/zap/wrk:rw -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8080 -r zap_report.html
+          docker run --rm -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8080 -r zap_report.html -x zap_report.xml || exit 1
 
-      - name: Upload ZAP Report
+      - name: Upload ZAP Report (HTML)
         uses: actions/upload-artifact@v4
         with:
           name: ZAP Security Report
           path: zap_report.html
+
+      - name: Upload ZAP Report (XML)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZAP Security Report XML
+          path: zap_report.xml
