@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run OWASP ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.10.1
+        uses: zaproxy/action-baseline@v0.10.0  # Use the correct version
         with:
           target: 'https://your-app-url.com'
           fail_action: false  # Prevents build failure on security findings
