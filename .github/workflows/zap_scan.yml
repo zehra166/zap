@@ -1,30 +1,29 @@
-name: OWASP ZAP Scan
+name: ZAP Security Scan
 
 on:
   push:
     branches:
       - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
-        
-      - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u zehra166 --password-stdin
 
-      - name: Start OWASP ZAP Baseline Scan
+      - name: Start Web Application (if applicable)
         run: |
-          docker pull ghcr.io/zaproxy/zap-stable:weekly
-          docker run --rm -v $(pwd):/zap/wrk:rw ghcr.io/zaproxy/zap-stable:latest zap-baseline.py -t https://your-staging-app.com -J zap_report.json
+          docker-compose up -d  # Modify based on your setup
 
-      - name: Upload ZAP Scan Report
+      - name: Run OWASP ZAP Baseline Scan
+        run: |
+          docker run --rm -v $(pwd):/zap/wrk:rw -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8080 -r zap_report.html
+
+      - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
-          name: zap-report
-          path: zap_report.json
+          name: ZAP Security Report
+          path: zap_report.html
