@@ -16,11 +16,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Login to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u zehra166 --password-stdin
+        run: echo "${{GHCR_TOKEN}}" | docker login ghcr.io -u zehra166 --password-stdin
 
       - name: Start OWASP ZAP Baseline Scan
         run: |
-          docker pull ghcr.io/zaproxy/zap-stable:latest
+          docker pull ghcr.io/zaproxy/zap-stable:weekly
           docker run --rm -v $(pwd):/zap/wrk:rw ghcr.io/zaproxy/zap-stable:latest zap-baseline.py -t https://your-staging-app.com -J zap_report.json
 
       - name: Upload ZAP Scan Report
