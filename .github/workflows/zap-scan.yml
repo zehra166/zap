@@ -11,17 +11,17 @@ on:
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Start ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.10.0
+      - name: Run OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.10.1
         with:
           target: 'https://your-app-url.com'
-          docker_name: 'owasp/zap2docker-stable'
-          fail_action: false
-          rules_file_name: '.zap/rules.tsv'  # Optional: Custom rules file
+          fail_action: false  # Prevents build failure on security findings
+          docker_name: 'ghcr.io/zaproxy/zap2docker-stable' # Updated Docker image
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
