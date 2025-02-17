@@ -30,7 +30,7 @@ jobs:
           path: report_html.html
 
       - name: Authenticate with GitHub Container Registry
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u zehra166 --password-stdin
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u zehra166 --password- 01111999jafar
 
       - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
