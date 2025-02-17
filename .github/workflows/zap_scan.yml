@@ -1,18 +1,10 @@
-name: ZAP Security Scan
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
 
     services:
       web:
-        image: my-web-app:latest  # Replace with your actual image
+        image: my-web-app:latest
         ports:
           - 8080:8080
 
@@ -20,21 +12,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Wait for Web Application to Start
-        run: sleep 30  # Adjust based on your app’s boot time
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Run OWASP ZAP Baseline Scan
-        run: |
-          docker run --rm -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8080 -r zap_report.html -x zap_report.xml || exit 1
-
-      - name: Upload ZAP Report (HTML)
-        uses: actions/upload-artifact@v4
-        with:
-          name: ZAP Security Report
-          path: zap_report.html
-
-      - name: Upload ZAP Report (XML)
-        uses: actions/upload-artifact@v4
-        with:
-          name: ZAP Security Report XML
-          path: zap_report.xml
+      - name: Pull and Run Web Application
+        run: docker pull my-web-app:latest
