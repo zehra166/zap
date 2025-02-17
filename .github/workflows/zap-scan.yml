@@ -37,4 +37,5 @@ jobs:
         with:
           target: 'https://your-app-url.com'
           fail_action: false
-          docker_name: 'owasp/zap2docker-stable' 
+          docker_name: 'ghcr.io/zaproxy/zap2docker-stable'
+
